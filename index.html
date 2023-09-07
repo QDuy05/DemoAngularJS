@@ -1,0 +1,193 @@
+<!doctype html>
+<html ng-app="my_app">
+
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-route/1.8.3/angular-route.min.js"></script>
+</head>
+
+<body ng-controller="my_controller">
+    <ul class="breadcrumb">
+        <li ng-repeat="menu in menus">{{menu}}</li>
+    </ul>
+    <div class="container-fluid">
+        <input type="text" size="30" ng-model="searching" placeholder="Enter searching">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                User Management
+            </div>
+            <div class="panel-body">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <td ng-repeat="col in columns" class="text-center">{{col}}</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="student in datalist|filter:searching" class="text-center">
+                            <td>{{student.no}}</td>
+                            <td>{{student.fullname|uppercase}}</td>
+                            <td>{{student.address}}</td>
+                            <td>{{student.age}}</td>
+                            <td>{{student.email|lowercase}}</td>
+                            <td>{{student.phone_number}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="panel-footer">Today: {{ today | date : "dd/MM/y"}}</div>
+        </div>
+
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                Add user
+            </div>
+            <div class="panel-body">
+                <form name="Form">
+                    <input ng-model="fullname" type="text" name="fullname" placeholder="Enter full name" size="50"
+                        ng-minlength="1">
+                    <!-- <span ng-if="Form.fullname.$valid" class="glyphicon glyphicon-ok" style="color:green;"></span> -->
+                    <br><br>
+                    <input ng-model="address" type="text" name="address" placeholder="Enter address" size="50">
+                    <!-- <span ng-if="!Form.address.$valid" class="glyphicon glyphicon-ok" style="color:green;"></span> -->
+                    <br><br>
+                    <input ng-model="age" type="number" name="age" placeholder="Enter age" size="50">
+                    <!-- <span ng-if="!Form.age.$valid" class="glyphicon glyphicon-ok" style="color:green;"></span> -->
+                    <br><br>
+                    <input type="email" name="email" ng-model="email" size="50" placeholder="Enter email">
+                    <span ng-if="Form.email.$error.email">Not a valid e-mail address</span>
+                    <span ng-if="!Form.email.$valid && !Form.email.$error.email" class="glyphicon glyphicon-ok"
+                        style="color:green;"></span>
+                    <br><br>
+                    <input ng-model="phone_number" type="text" name="phone_number" placeholder="Enter phone number"
+                        size="50">
+                    <!-- <span ng-if="!Form.phone_number.$valid" class="glyphicon glyphicon-ok" style="color:green;"></span> -->
+                    <br><br>
+                    <button ng-click="add_user()" class="btn">Add user</button>
+                    <!-- <button class="btn">Sort</button>-->
+                    <!-- <button class="btn" ng-click="reset(form1)">Reset</button> -->
+                </form>
+            </div>
+        </div>
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                Form login
+            </div>
+            <div class="panel-body">
+                <input type="checkbox" ng-model="form1" value="showForm1">Show Form 1
+                <input type="checkbox" ng-model="form2" value="showForm2">Show Form 2
+                <form ng-show="form1">
+                    <div class="form-group">
+                        <label for="exampleInputEmail1">Email address</label>
+                        <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Email">
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputPassword1">Password</label>
+                        <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputFile">File input</label>
+                        <input type="file" id="exampleInputFile">
+                        <p class="help-block">Example block-level help text here.</p>
+                    </div>
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox"> Check me out
+                        </label>
+                    </div>
+                    <button type="submit" class="btn btn-default">Submit</button>
+                </form>
+                <form class="form-inline" ng-show="form2">
+                    <div class="form-group">
+                        <label for="exampleInputName2">Name</label>
+                        <input type="text" class="form-control" id="exampleInputName2" placeholder="Jane Doe">
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputEmail2">Email</label>
+                        <input type="email" class="form-control" id="exampleInputEmail2"
+                            placeholder="jane.doe@example.com">
+                    </div>
+                    <button type="submit" class="btn btn-default">Send invitation</button>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+    <script type="text/javascript">
+        var app = angular.module("my_app", []);
+        app.controller("my_controller", function ($scope) {
+            $scope.datalist = new Array();
+            $scope.menus = ['Home', 'User Manager', 'Add user'];
+            $scope.columns = ['No', 'Fullname', 'Address', 'Age', 'Email', 'Phone number'];
+            $scope.today = new Date();
+            $scope.add_user = function () {
+                var student = {
+                    "no": this.datalist.length + 1,
+                    "fullname": this.fullname,
+                    "address": this.address,
+                    "age": this.age,
+                    "email": this.email,
+                    "phone_number": this.phone_number
+                };
+                this.datalist[this.datalist.length] = student;
+            }
+            // $scope.reset = function () {
+            //     $scope.secondReset = function (formModel) {
+            //         angular.copy({}, formModel);
+            //     }
+            // }
+
+        });
+    </script>
+</body>
+
+<!-- <body ng-controller="mycontroller">
+    <ul class="breadcrumb">
+        <li ng-repeat="menu in menus"><a href="{{menu.url}}">{{menu.title}}</a></li>
+    </ul>
+    <div ng-view></div>
+
+    <script type="text/javascript">
+        var app = angular.module("my_app", ['ngRoute']);
+        app.config(function ($routeProvider) {
+            $routeProvider.when('/', {
+                'templateUrl': 'home.html'
+            })
+                .when('/home', {
+                    'templateUrl': 'home.html'
+                })
+                .when('/user_management', {
+                    'templateUrl': 'management.html'
+                })
+                .when('/add_user', {
+                    'templateUrl': 'add.html'
+                })
+
+        });
+        app.controller('mycontroller', function ($scope) {
+            $scope.menus = [{
+                'title': 'Home',
+                'url': '#home'
+            },
+            {
+                'title': 'User Management',
+                'url': '#user_management'
+            },
+            {
+                'title': 'Add User',
+                'url': '#add_user'
+            },
+            {
+                'title': 'Login',
+                'url': '#login'
+            }
+            ]
+        })
+    </script>
+</body> -->
+
+</html>
